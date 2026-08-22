@@ -2,6 +2,9 @@ import express from "express";
 import cors from "cors";
 import "dotenv/config";
 
+import fs from "node:fs";
+import path, { join } from "node:path";
+
 import {clerkWebhookHandler} from "./webhooks/clerk";
 import {clerkMiddleware} from "@clerk/express";
 import { getEnv } from "./lib/env";
@@ -18,6 +21,22 @@ app.use(express.json());
 app.use(cors());
 app.use(clerkMiddleware());
 
+const publicDir = path.join(process.cwd(),"public")
+if (fs.existsSync(publicDir)) {
+    app.use(express.static(publicDir))
+    app.get("*", (req,res,next) => {
+        if(req.method !== "GET" && req.method !== "HEAD"){
+            next();
+            return;
+        }
+        if (req.path.startsWith("/api") || req.path.startsWith("/webhooks")) {
+            next();
+            return;
+        }
 
+        res.sendFile(path.join(publicDir, "index.js"), (err) => next(err));
+    })
+
+}
 
 app.listen(env.PORT, () => console.log("listening on port:", env.PORT));
