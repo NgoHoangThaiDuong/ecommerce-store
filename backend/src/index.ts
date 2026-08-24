@@ -3,7 +3,7 @@ import cors from "cors";
 import "dotenv/config";
 
 import fs from "node:fs";
-import path, { join } from "node:path";
+import path from "node:path";
 
 import {clerkWebhookHandler} from "./webhooks/clerk";
 import {clerkMiddleware} from "@clerk/express";
@@ -21,10 +21,10 @@ app.use(express.json());
 app.use(cors());
 app.use(clerkMiddleware());
 
-const publicDir = path.join(process.cwd(),"public")
+const publicDir = path.join(process.cwd(),"public");
 if (fs.existsSync(publicDir)) {
-    app.use(express.static(publicDir))
-    app.get("/{*any}*", (req,res,next) => {
+    app.use(express.static(publicDir));
+    app.get("/{*any}", (req,res,next) => {
         if(req.method !== "GET" && req.method !== "HEAD"){
             next();
             return;

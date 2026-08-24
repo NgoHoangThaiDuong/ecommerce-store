@@ -50,7 +50,7 @@ export async function clerkWebhookHandler(req: Request, res: Response) {
         })
         .onConflictDoUpdate({
           target: users.clerkUserId,
-          set: { email, displayName, role, updatedAt: new Date() },
+          set: {email, displayName, role, updatedAt: new Date()},
         });
     }
 
