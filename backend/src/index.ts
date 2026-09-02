@@ -9,6 +9,12 @@ import {clerkWebhookHandler} from "./webhooks/clerk";
 import {clerkMiddleware} from "@clerk/express";
 import { getEnv } from "./lib/env";
 import keepAliveCron from "./lib/cron";
+
+import meRouter from "./routes/meRouter";
+import productRouter from "./routes/productRouter";
+import streamRouter from "./routes/streamRouter";
+
+
 const env = getEnv();
 const app = express();
 
@@ -24,6 +30,9 @@ app.use(clerkMiddleware());
 app.get("/health", (_req,res) => {
     res.json({ok:true});
 });
+app.use("/api/me", meRouter);
+app.use("/api/products", productRouter);
+app.use("/api/stream", streamRouter);
 
 const publicDir = path.join(process.cwd(),"public");
 if (fs.existsSync(publicDir)) {
